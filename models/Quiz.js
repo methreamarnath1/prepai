@@ -103,3 +103,13 @@ const quizSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
+// Calculate totals before saving
+quizSchema.pre("save", function (next) {
+  this.totalQuestions = this.questions.length;
+  this.totalPoints = this.questions.reduce((total, q) => total + q.points, 0);
+  this.updatedAt = Date.now();
+  next();
+});
+
+module.exports = mongoose.model("Quiz", quizSchema);
